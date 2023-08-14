@@ -3,7 +3,6 @@ package database
 import (
 	"attendance/config"
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -27,7 +26,6 @@ func Connect() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Connected to MongoDB : 🔥")
 	return client
 }
 

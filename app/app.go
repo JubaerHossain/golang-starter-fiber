@@ -8,6 +8,7 @@ import (
 	"attendance/config"
 	"attendance/database"
 	"attendance/utils"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/goccy/go-json"
@@ -37,18 +38,16 @@ func Start() {
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
-		Concurrency: 1000,
-		Prefork:    true,
+		JSONEncoder:  json.Marshal,
+		JSONDecoder:  json.Unmarshal,
+		Concurrency:  1000,
+		Prefork:      true,
 		ServerHeader: "Fiber",
-		AppName: "Attendance",
-
+		AppName:      "Attendance",
 	})
 
 	app.Use(cors.New())
 	app.Use(logger.New())
-	
 
 	// Set up routes
 	routes.UserRoute(app, userController)
@@ -57,6 +56,6 @@ func Start() {
 	app.Static("/", "./views") // serve static files
 
 	// Start the server
-	print("Server is running on port: " + config.Env("APP_URL") + ":" + config.Env("PORT"))
+	fmt.Println("Server is running on port: 🔥🔥" + config.Env("APP_URL") + ":" + config.Env("PORT"))
 	app.Listen(":" + config.Env("PORT"))
 }
