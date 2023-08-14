@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: attendance-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - attendance-network
+
+  attendance-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: attendance-app:latest
+    container_name: attendance-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - attendance-network
+
+networks:
+  attendance-network:
+
+volumes:
+  mongodb-data:
