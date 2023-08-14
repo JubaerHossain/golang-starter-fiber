@@ -65,27 +65,62 @@ func (ctrl *UserController) GetAllUsers(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(utils.Response{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": "Invalid pageSize parameter"}})
 	}
 
-	// Attempt to retrieve data from cache
-	cacheKey := "users:" + page + ":" + pageSize
-	cachedData, err := ctrl.RedisClient.Get(ctx, cacheKey).Result()
-	if err == nil {
-		// Data found in cache, return it
+	// Create channels to receive results
+	usersCh := make(chan []models.User)
+	cacheErrCh := make(chan error)
+	serviceErrCh := make(chan error)
+
+	// Concurrently fetch data from cache
+	go func() {
+		cacheKey := "users:" + page + ":" + pageSize
+		cachedData, err := ctrl.RedisClient.Get(ctx, cacheKey).Result()
+		if err != nil {
+			cacheErrCh <- err
+			return
+		}
 		var users []models.User
 		if err := json.Unmarshal([]byte(cachedData), &users); err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+			cacheErrCh <- err
+			return
 		}
-		return c.Status(http.StatusOK).JSON(utils.Response{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": users}})
+		usersCh <- users
+	}()
+
+	// Concurrently fetch data from the service
+	go func() {
+		users, err := ctrl.UserService.GetAllUsers(ctx, pageInt, pageSizeInt)
+		if err != nil {
+			serviceErrCh <- err
+			return
+		}
+		usersCh <- users
+	}()
+
+	// Wait for results from both channels
+	var users []models.User
+	var cacheErr, serviceErr error
+	for i := 0; i < 2; i++ {
+		select {
+		case users = <-usersCh:
+		case cacheErr = <-cacheErrCh:
+		case serviceErr = <-serviceErrCh:
+		}
 	}
 
-	// Data not found in cache, fetch from the service
-	users, err := ctrl.UserService.GetAllUsers(ctx, pageInt, pageSizeInt)
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	if cacheErr != nil && serviceErr != nil {
+		return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": cacheErr.Error() + ", " + serviceErr.Error()}})
+	} else if cacheErr != nil {
+		return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": cacheErr.Error()}})
+	} else if serviceErr != nil {
+		return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": serviceErr.Error()}})
 	}
 
-	// Store data in cache
-	usersJSON, _ := json.Marshal(users)
-	ctrl.RedisClient.Set(ctx, cacheKey, string(usersJSON), time.Minute)
+	// Store data in cache (if fetched from the service)
+	if serviceErr == nil {
+		usersJSON, _ := json.Marshal(users)
+		cacheKey := "users:" + page + ":" + pageSize
+		ctrl.RedisClient.Set(ctx, cacheKey, string(usersJSON), time.Minute)
+	}
 
 	return c.Status(http.StatusOK).JSON(utils.Response{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": users}})
 }
