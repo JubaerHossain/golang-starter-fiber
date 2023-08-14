@@ -1,9 +1,16 @@
 package config
 
 import (
-	"attendance/utils"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-func InitDatabase() {
-	utils.InitMongoDBConnection()
+func Env(val string) string {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	return os.Getenv(val)
 }
