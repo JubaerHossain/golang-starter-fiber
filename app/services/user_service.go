@@ -26,3 +26,7 @@ func (service *UserService) CreateUser(ctx context.Context, user models.User) (*
 func (service *UserService) GetUserByID(ctx context.Context, userId string) (*models.User, error) {
 	return service.UserRepo.FindUserByID(ctx, userId)
 }
+
+func (service *UserService) GetAllUsers(ctx context.Context) ([]models.User, error) {
+	return service.UserRepo.FindAllUsers(ctx)
+}

@@ -43,4 +43,13 @@ func (ctrl *UserController) CreateUser(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(utils.Response{Status: http.StatusCreated, Message: "success", Data: &fiber.Map{"data": result}})
 }
 
+func (ctrl *UserController) GetAllUsers(c *fiber.Ctx) error {
+	ctx := c.Context()
+	users, err := ctrl.UserService.GetAllUsers(ctx)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+	return c.Status(http.StatusOK).JSON(utils.Response{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": users}})
+}
+
 // Implement other controller methods using UserService

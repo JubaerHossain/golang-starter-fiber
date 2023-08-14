@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDB() *mongo.Client {
+func Connect() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(config.Env("MONGOURI")))
 	if err != nil {
 		log.Fatal(err)
@@ -32,4 +32,4 @@ func ConnectDB() *mongo.Client {
 }
 
 // Client instance
-var DB *mongo.Client = ConnectDB()
+var DB *mongo.Client = Connect()

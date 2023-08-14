@@ -36,3 +36,17 @@ func (repo *UserRepository) FindUserByID(ctx context.Context, userId string) (*m
 	}
 	return &user, nil
 }
+
+func (repo *UserRepository) FindAllUsers(ctx context.Context) ([]models.User, error) {
+	var users []models.User
+	cursor, err := repo.Collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	for cursor.Next(ctx) {
+		var user models.User
+		cursor.Decode(&user)
+		users = append(users, user)
+	}
+	return users, nil
+}
