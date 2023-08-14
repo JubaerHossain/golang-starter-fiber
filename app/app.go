@@ -13,7 +13,6 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func Start() {
@@ -37,16 +36,15 @@ func Start() {
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
-		Concurrency: 1000,
-		Prefork:    true,
+		JSONEncoder:  json.Marshal,
+		JSONDecoder:  json.Unmarshal,
+		Concurrency:  1000,
+		Prefork:      true,
 		ServerHeader: "Fiber",
-		
 	})
 
 	app.Use(cors.New())
-	app.Use(logger.New())
+	// app.Use(logger.New())
 
 	// Set up routes
 	routes.UserRoute(app, userController)

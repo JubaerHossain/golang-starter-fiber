@@ -116,7 +116,8 @@ func (ctrl *UserController) GetAllUsers(c *fiber.Ctx) error {
 	if err == nil {
 		var users []models.User
 		if err := json.Unmarshal([]byte(cachedData), &users); err == nil {
-			return c.Status(http.StatusOK).JSON(utils.Response{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": users}})
+			hasNext := len(users) >= pageSizeInt
+			return utils.BuildPaginatedResponse(c, users, pageInt, len(users), hasNext)
 		}
 	}
 
@@ -141,6 +142,6 @@ func (ctrl *UserController) GetAllUsers(c *fiber.Ctx) error {
 		// Handle cache set error if necessary
 		// You can log the error or take appropriate action
 	}
-
-	return c.Status(http.StatusOK).JSON(utils.Response{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": users}})
+	hasNext := len(users) >= pageSizeInt
+	return utils.BuildPaginatedResponse(c, users, pageInt, len(users), hasNext)
 }

@@ -8,6 +8,14 @@ type Response struct {
 	Data    *fiber.Map `json:"data"`
 }
 
+type PaginatedResponse struct {
+	Ctx        *fiber.Ctx
+	Data       interface{}
+	Page       int
+	PageSize   int
+	TotalUsers int
+}
+
 func NewErrorResponse(status int, message string) *Response {
 	return &Response{
 		Status:  status,
