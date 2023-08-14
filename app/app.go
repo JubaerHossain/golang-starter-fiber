@@ -43,7 +43,6 @@ func Start() {
 		Prefork:    true,
 		ServerHeader: "Fiber",
 		AppName: "Attendance",
-		Views: engine,
 
 	})
 
