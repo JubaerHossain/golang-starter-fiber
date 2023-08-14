@@ -132,16 +132,11 @@ func (ctrl *UserController) GetAllUsers(c *fiber.Ctx) error {
 	cacheTTLStr := config.Env("CACHE_TTL")
 	cacheTTL, err := strconv.Atoi(cacheTTLStr)
 	if err != nil {
-		// Handle error (invalid cache TTL value)
-		// For example, you can set a default value or log the error
 		cacheTTL = 5 // Default cache TTL in minutes
 	}
 
 	cacheExpiration := time.Duration(cacheTTL) * time.Minute
-	if err := ctrl.RedisClient.Set(ctx, cacheKey, string(usersJSON), cacheExpiration).Err(); err != nil {
-		// Handle cache set error if necessary
-		// You can log the error or take appropriate action
-	}
+	ctrl.RedisClient.Set(ctx, cacheKey, string(usersJSON), cacheExpiration)
 	hasNext := len(users) >= pageSizeInt
 	return utils.BuildPaginatedResponse(c, users, pageInt, len(users), hasNext)
 }
