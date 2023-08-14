@@ -28,8 +28,10 @@ func Start() {
 	// Initialize validator
 	validate := validator.New()
 
+	redisClient := database.RedisClient()
+
 	// Initialize controllers
-	userController := controllers.NewUserController(userService, validate)
+	userController := controllers.NewUserController(userService, validate, redisClient)
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
