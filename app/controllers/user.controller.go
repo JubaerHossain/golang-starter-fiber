@@ -6,6 +6,7 @@ import (
 	"attendance/app/services"
 	"attendance/utils"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -45,7 +46,22 @@ func (ctrl *UserController) CreateUser(c *fiber.Ctx) error {
 
 func (ctrl *UserController) GetAllUsers(c *fiber.Ctx) error {
 	ctx := c.Context()
-	users, err := ctrl.UserService.GetAllUsers(ctx)
+
+	// Get pagination parameters from the query parameters
+	page := c.Query("page", "1")          // Default to page 1 if not provided
+	pageSize := c.Query("pageSize", "10") // Default to 10 items per page if not provided
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(utils.Response{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": "Invalid page parameter"}})
+	}
+
+	pageSizeInt, err := strconv.Atoi(pageSize)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(utils.Response{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": "Invalid pageSize parameter"}})
+	}
+
+	users, err := ctrl.UserService.GetAllUsers(ctx, pageInt, pageSizeInt)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(utils.Response{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}

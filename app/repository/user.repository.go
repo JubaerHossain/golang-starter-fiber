@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type UserRepository struct {
@@ -37,16 +38,24 @@ func (repo *UserRepository) FindUserByID(ctx context.Context, userId string) (*m
 	return &user, nil
 }
 
-func (repo *UserRepository) FindAllUsers(ctx context.Context) ([]models.User, error) {
+func (repo *UserRepository) FindUsers(ctx context.Context, page, pageSize int) ([]models.User, error) {
 	var users []models.User
-	cursor, err := repo.Collection.Find(ctx, bson.M{})
+
+	// Calculate the number of documents to skip based on the page and pageSize
+	skip := (page - 1) * pageSize
+
+	// Define options for pagination
+	options := options.Find().SetSkip(int64(skip)).SetLimit(int64(pageSize))
+
+	cursor, err := repo.Collection.Find(ctx, bson.M{}, options)
 	if err != nil {
 		return nil, err
 	}
-	for cursor.Next(ctx) {
-		var user models.User
-		cursor.Decode(&user)
-		users = append(users, user)
+	defer cursor.Close(ctx)
+
+	if err := cursor.All(ctx, &users); err != nil {
+		return nil, err
 	}
+
 	return users, nil
 }

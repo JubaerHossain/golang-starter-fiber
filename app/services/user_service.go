@@ -27,6 +27,6 @@ func (service *UserService) GetUserByID(ctx context.Context, userId string) (*mo
 	return service.UserRepo.FindUserByID(ctx, userId)
 }
 
-func (service *UserService) GetAllUsers(ctx context.Context) ([]models.User, error) {
-	return service.UserRepo.FindAllUsers(ctx)
+func (service *UserService) GetAllUsers(ctx context.Context, page, pageSize int) ([]models.User, error) {
+	return service.UserRepo.FindUsers(ctx, page, pageSize)
 }
