@@ -8,10 +8,13 @@ import (
 	"attendance/config"
 	"attendance/database"
 	"attendance/utils"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func Start() {
@@ -28,14 +31,23 @@ func Start() {
 	// Initialize validator
 	validate := validator.New()
 
+	redisClient := database.RedisClient()
+
 	// Initialize controllers
-	userController := controllers.NewUserController(userService, validate)
+	userController := controllers.NewUserController(userService, validate, redisClient)
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
+		JSONEncoder:  json.Marshal,
+		JSONDecoder:  json.Unmarshal,
+		Concurrency:  1000,
+		Prefork:      true,
+		ServerHeader: "Fiber",
+		AppName:      "Attendance",
 	})
+
+	app.Use(cors.New())
+	app.Use(logger.New())
 
 	// Set up routes
 	routes.UserRoute(app, userController)
@@ -44,6 +56,6 @@ func Start() {
 	app.Static("/", "./views") // serve static files
 
 	// Start the server
-	print("Server is running on port: " + config.Env("APP_URL") + ":" + config.Env("PORT"))
+	fmt.Println("Server is running on port: 🔥🔥" + config.Env("APP_URL") + ":" + config.Env("PORT"))
 	app.Listen(":" + config.Env("PORT"))
 }
