@@ -1,5 +1,5 @@
 # Use a lightweight base image
-FROM golang:1.21 AS build
+FROM golang:1.21.0-alpine3.18 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -12,19 +12,22 @@ RUN go mod download
 COPY . .
 
 # Build your Go application with optimizations
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o golang-starter-fiber .
 
 # Create a minimal image
 FROM alpine:latest
 
 # Install CA certificates for SSL/TLS compatibility
-RUN apk --no-cache add ca-certificates
+# RUN apk --no-cache add ca-certificates
 
-# Set the working directory inside the final container
-WORKDIR /app
+
 
 # Copy the built Go binary from the previous stage
-COPY --from=build /app/app .
+COPY --from=build /app/golang-starter-fiber /app/golang-starter-fiber
+
+# Copy the .env file into the final container
+COPY .env .env
+
 
 # Expose the port your application will listen on (adjust if needed)
 EXPOSE 8080
@@ -33,4 +36,4 @@ EXPOSE 8080
 # USER myuser
 
 # Run your Go application (replace with your binary name if different)
-CMD ["./app"]
+CMD ["/app/golang-starter-fiber"]

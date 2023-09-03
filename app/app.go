@@ -41,9 +41,9 @@ func Start() {
 		JSONEncoder:  json.Marshal,
 		JSONDecoder:  json.Unmarshal,
 		Concurrency:  1000,
-		Prefork:      true,
+		Prefork:      false,
 		ServerHeader: "Fiber",
-		AppName:      "Attendance",
+		AppName:      "golang-starter-fiber",
 	})
 
 	app.Use(cors.New())
