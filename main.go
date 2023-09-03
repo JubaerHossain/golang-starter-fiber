@@ -1,7 +1,7 @@
 package main
 
 import (
-	"attendance/app"
+	"github.com/JubaerHossain/golang-starter-fiber/app"
 )
 
 func main() {

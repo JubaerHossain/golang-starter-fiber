@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"attendance/config"
-	"attendance/database"
+	"github.com/JubaerHossain/golang-starter-fiber/config"
+	"github.com/JubaerHossain/golang-starter-fiber/database"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )

@@ -2,7 +2,7 @@
 package routes
 
 import (
-	"attendance/app/controllers"
+	"github.com/JubaerHossain/golang-starter-fiber/app/controllers"
 	"github.com/gofiber/fiber/v2"
 )
 

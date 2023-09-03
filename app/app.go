@@ -1,13 +1,13 @@
 package app
 
 import (
-	"attendance/app/controllers"
-	"attendance/app/repository"
-	"attendance/app/routes"
-	"attendance/app/services"
-	"attendance/config"
-	"attendance/database"
-	"attendance/utils"
+	"github.com/JubaerHossain/golang-starter-fiber/app/controllers"
+	"github.com/JubaerHossain/golang-starter-fiber/app/repository"
+	"github.com/JubaerHossain/golang-starter-fiber/app/routes"
+	"github.com/JubaerHossain/golang-starter-fiber/app/services"
+	"github.com/JubaerHossain/golang-starter-fiber/config"
+	"github.com/JubaerHossain/golang-starter-fiber/database"
+	"github.com/JubaerHossain/golang-starter-fiber/utils"
 	"fmt"
 
 	"github.com/go-playground/validator/v10"

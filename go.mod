@@ -1,4 +1,4 @@
-module attendance
+module github.com/JubaerHossain/golang-starter-fiber
 
 go 1.20
 

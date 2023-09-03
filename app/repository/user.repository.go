@@ -2,7 +2,7 @@
 package repository
 
 import (
-	"attendance/app/models"
+	"github.com/JubaerHossain/golang-starter-fiber/app/models"
 	"context"
 	"time"
 

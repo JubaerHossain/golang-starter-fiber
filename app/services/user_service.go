@@ -2,8 +2,8 @@
 package services
 
 import (
-	"attendance/app/models"
-	"attendance/app/repository"
+	"github.com/JubaerHossain/golang-starter-fiber/app/models"
+	"github.com/JubaerHossain/golang-starter-fiber/app/repository"
 	"context"
 
 	"go.mongodb.org/mongo-driver/mongo"

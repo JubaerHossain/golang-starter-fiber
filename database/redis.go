@@ -1,7 +1,7 @@
 package database
 
 import (
-	"attendance/config"
+	"github.com/JubaerHossain/golang-starter-fiber/config"
 
 	"github.com/go-redis/redis/v8"
 )

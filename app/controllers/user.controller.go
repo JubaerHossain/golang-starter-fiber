@@ -2,10 +2,10 @@
 package controllers
 
 import (
-	"attendance/app/models"
-	"attendance/app/services"
-	"attendance/config"
-	"attendance/utils"
+	"github.com/JubaerHossain/golang-starter-fiber/app/models"
+	"github.com/JubaerHossain/golang-starter-fiber/app/services"
+	"github.com/JubaerHossain/golang-starter-fiber/config"
+	"github.com/JubaerHossain/golang-starter-fiber/utils"
 	"fmt"
 	"net/http"
 	"strconv"

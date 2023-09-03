@@ -1,8 +1,5 @@
-# Attendance System Documentation
+# Golang Starter Fiber
 
-## Overview
-
-The Attendance System is a web application designed to manage user attendance records. It includes features for creating, updating, and deleting user profiles, and recording attendance.
 
 ## Table of Contents
 
@@ -31,8 +28,8 @@ The project follows a modular structure for better organization. Here's a breakd
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/attendance-system.git
-   cd attendance-system
+   git clone https://github.com/JubaerHossain/golang-starter-fiber.git
+   cd golang-starter-fiber
    ```
 
 2. Install dependencies:
@@ -68,21 +65,17 @@ The project follows a modular structure for better organization. Here's a breakd
 | /api/users/:id        | GET    | Get a user by ID                    |
 | /api/users/:id        | PUT    | Update a user by ID                 |
 | /api/users/:id        | DELETE | Delete a user by ID                 |
-| /api/users/:id/attend | POST   | Record attendance for a user        |
-| /api/users/:id/attend | GET    | Get attendance records for a user   |
-| /api/users/:id/attend | PUT    | Update attendance record for a user |
-| /api/users/:id/attend | DELETE | Delete attendance record for a user |
 
 ## Build the Docker image:
 
 ```bash
-docker build -t attendance-app .
+docker build -t golang-starter-fiber .
 ```
 
 ## Run the Docker container:
 
 ```bash
-docker run -p 3000:3000 attendance-app
+docker run -p 3000:3000 golang-starter-fiber
 ```
 
 ### API Documentation

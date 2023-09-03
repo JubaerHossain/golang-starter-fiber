@@ -1,7 +1,7 @@
 package database
 
 import (
-	"attendance/config"
+	"github.com/JubaerHossain/golang-starter-fiber/config"
 	"context"
 	"log"
 	"time"
