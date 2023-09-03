@@ -1,6 +1,6 @@
 module github.com/JubaerHossain/golang-starter-fiber
 
-go 1.20
+go 1.21
 
 require go.mongodb.org/mongo-driver v1.12.1
 

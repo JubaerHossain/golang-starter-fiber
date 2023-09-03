@@ -1,26 +1,36 @@
-# Use an official Go runtime as the base image
-FROM golang:1.17 AS builder
+# Use a lightweight base image
+FROM golang:1.21 AS build
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the entire source code into the container
+# Copy only the Go module files and download dependencies (if go.mod or go.sum changes)
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of your Go application code into the container
 COPY . .
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o attendance-app main.go
+# Build your Go application with optimizations
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
-# Use a lightweight Alpine Linux image
+# Create a minimal image
 FROM alpine:latest
 
-# Set the working directory
+# Install CA certificates for SSL/TLS compatibility
+RUN apk --no-cache add ca-certificates
+
+# Set the working directory inside the final container
 WORKDIR /app
 
-# Copy the built binary from the builder image
-COPY --from=builder /app/attendance-app .
+# Copy the built Go binary from the previous stage
+COPY --from=build /app/app .
 
-# Expose the port your application listens on
-EXPOSE 3000
+# Expose the port your application will listen on (adjust if needed)
+EXPOSE 8080
 
-# Command to run the application
-CMD ["./attendance-app"]
+# Optionally, create a non-root user for running the application
+# USER myuser
+
+# Run your Go application (replace with your binary name if different)
+CMD ["./app"]
