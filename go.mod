@@ -2,7 +2,13 @@ module attendance
 
 go 1.20
 
-require go.mongodb.org/mongo-driver v1.12.1
+require (
+	github.com/go-playground/validator/v10 v10.15.0
+	github.com/goccy/go-json v0.10.2
+	github.com/gofiber/fiber/v2 v2.48.0
+	github.com/joho/godotenv v1.5.1
+	go.mongodb.org/mongo-driver v1.12.1
+)
 
 require golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 
